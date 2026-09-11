@@ -1,7 +1,7 @@
 const express = require("express");
 
 const authMiddleware = require("../../middleware/auth.middleware");
-const forecastController = require("./forecast.controller");
+const dashboardController = require("./dashboard.controller");
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ router.use(authMiddleware);
 
 router.get(
   "/",
-  forecastController.getForecast
+  dashboardController.getDashboard
 );
 
 module.exports = router;

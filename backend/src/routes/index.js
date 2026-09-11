@@ -10,6 +10,11 @@ const cashflowRoutes = require("../modules/cashflow/cashflow.routes");
 const forecastRoutes = require("../modules/forecast/forecast.routes");
 const workingCapitalRoutes = require("../modules/working-capital/workingCapital.routes");
 const alertRoutes = require("../modules/alerts/alert.routes");
+const dashboardRoutes = require("../modules/dashboard/dashboard.routes");
+
+
+
+
 const router = express.Router();
 
 router.get("/health", (req, res) => {
@@ -40,6 +45,8 @@ router.use(
 );
 router.use("/forecast", forecastRoutes);
 router.use("/alerts", alertRoutes);
+router.use("/dashboard", dashboardRoutes);
+
 
 
 module.exports = router;
