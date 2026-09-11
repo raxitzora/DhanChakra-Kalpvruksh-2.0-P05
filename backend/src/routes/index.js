@@ -3,7 +3,7 @@ const express = require("express");
 const authMiddleware = require("../middleware/auth.middleware");
 const userRoutes = require("../modules/users/user.routes");
 const businessRoutes = require("../modules/businesses/business.routes");
-
+const transactionRoutes = require("../modules/transactions/transaction.routes");
 
 const router = express.Router();
 
@@ -24,6 +24,7 @@ router.get("/protected", authMiddleware, (req, res) => {
 
 router.use("/users", userRoutes);
 router.use("/businesses", businessRoutes);
+router.use("/transactions", transactionRoutes);
 
 
 
