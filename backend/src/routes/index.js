@@ -11,7 +11,7 @@ const forecastRoutes = require("../modules/forecast/forecast.routes");
 const workingCapitalRoutes = require("../modules/working-capital/workingCapital.routes");
 const alertRoutes = require("../modules/alerts/alert.routes");
 const dashboardRoutes = require("../modules/dashboard/dashboard.routes");
-
+const aiRoutes = require("../modules/ai/ai.routes");
 
 
 
@@ -46,6 +46,7 @@ router.use(
 router.use("/forecast", forecastRoutes);
 router.use("/alerts", alertRoutes);
 router.use("/dashboard", dashboardRoutes);
+router.use("/ai", aiRoutes);
 
 
 
