@@ -7,7 +7,7 @@ const transactionRoutes = require("../modules/transactions/transaction.routes");
 const payableRoutes = require("../modules/payables/payable.routes");
 const receivableRoutes = require("../modules/receivables/receivable.routes");
 const cashflowRoutes = require("../modules/cashflow/cashflow.routes");
-
+const forecastRoutes = require("../modules/forecast/forecast.routes");
 const workingCapitalRoutes = require("../modules/working-capital/workingCapital.routes");
 const router = express.Router();
 
@@ -37,6 +37,7 @@ router.use(
   "/working-capital",
   workingCapitalRoutes
 );
+router.use("/forecast", forecastRoutes);
 
 
 module.exports = router;
