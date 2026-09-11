@@ -1,55 +1,103 @@
-import { Route, Routes } from "react-router-dom";
-import Dashboard from "../Pages/Dashboard";
-import Transactions from "../Pages/Transactions";
-import Inventory from "../Pages/Inventory";
-import Suppliers from "../Pages/Suppliers";
-import Forecast from "../Pages/Forecast";
-import Settings from "../Pages/Settings";
-import { Login } from "../Pages/Login";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
+
+import Login from "../Pages/Login";
 import Register from "../Pages/Register";
-import NotFound from "../Pages/NotFound";
-import ProtectedRoute from "./ProtectedRoutes";
+import Dashboard from "../Pages/Dashboard";
+import BusinessSetup from "../Pages/BusinessSetup";
+import Transactions from "../Pages/Transactions";
+import Payables from "../Pages/Payables";
+import Receivables from "../Pages/Receivables";
+import WorkingCapital from "../Pages/WorkingCapital";
+import Forecast from "../Pages/Forecast";
+import Risk from "../Pages/Risk";
 
-export default function AppRoutes() {
-    return (
-        <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+import ProtectedRoutes from "./ProtectedRoutes";
+import MainLayout from "../Layout/MainLayout";
+import AIChatTest from "../Pages/AIChatTest";
 
-            {/* Protected routes */}
-            <Route path="/dashboard" element={
-                <ProtectedRoute>
-                    <Dashboard />
-                </ProtectedRoute>
-            } />
-            <Route path="/transactions" element={
-                <ProtectedRoute>
-                    <Transactions />
-                </ProtectedRoute>
-            } />
-            <Route path="/inventory" element={
-                <ProtectedRoute>
-                    <Inventory />
-                </ProtectedRoute>
-            } />
-            <Route path="/suppliers" element={
-                <ProtectedRoute>
-                    <Suppliers />
-                </ProtectedRoute>
-            } />
-            <Route path="/forecast" element={
-                <ProtectedRoute>
-                    <Forecast />
-                </ProtectedRoute>
-            } />
-            <Route path="/settings" element={
-                <ProtectedRoute>
-                    <Settings />
-                </ProtectedRoute>
-            } />
+function AppRoutes() {
+  return (
+    <BrowserRouter>
+      <Routes>
 
-            <Route path="*" element={<NotFound />} />
-        </Routes>
-    );
+        {/* Public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* Protected routes */}
+        <Route element={<ProtectedRoutes />}>
+
+          {/* Business setup stays outside the main application layout */}
+          <Route
+            path="/business-setup"
+            element={<BusinessSetup />}
+          />
+
+          {/* Main application layout */}
+          <Route element={<MainLayout />}>
+
+            <Route
+              path="/"
+              element={<Dashboard />}
+            />
+
+            <Route
+              path="/dashboard"
+              element={<Dashboard />}
+            />
+
+            <Route
+              path="/transactions"
+              element={<Transactions />}
+            />
+
+            <Route
+              path="/payables"
+              element={<Payables />}
+            />
+
+            <Route
+              path="/receivables"
+              element={<Receivables />}
+            />
+
+            <Route
+              path="/working-capital"
+              element={<WorkingCapital />}
+            />
+
+            <Route
+              path="/forecast"
+              element={<Forecast />}
+            />
+
+              <Route
+    path="/risk"
+    element={<Risk />}
+  />
+
+<Route
+  path="/ai-chat-test"
+  element={<AIChatTest />}
+/>
+          </Route>
+
+        </Route>
+
+        {/* Unknown route */}
+        <Route
+          path="*"
+          element={<Navigate to="/dashboard" replace />}
+        />
+
+      </Routes>
+    </BrowserRouter>
+  );
 }
+
+export default AppRoutes;

@@ -1,37 +1,67 @@
-import { Link, useLocation } from "react-router-dom";
-import { MdOutlineDashboard, MdOutlineReceiptLong, MdOutlineInventory, MdOutlinePeople, MdOutlineInsights, MdOutlineSettings } from "react-icons/md";
+import { NavLink } from "react-router-dom";
 
-export default function Sidebar() {
-    const location = useLocation();
-    
-    return (
-        <aside className="w-64 h-screen border-r border-gray-200 bg-white flex flex-col">
-            <nav className="flex-1 px-4 py-4 space-y-2">
-                <Link to="/dashboard" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${location.pathname === '/dashboard' ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>
-                    <MdOutlineDashboard className="w-5 h-5" />
-                    <span>Dashboard</span>
-                </Link>
-                <Link to="/transactions" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${location.pathname === '/transactions' ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>
-                    <MdOutlineReceiptLong className="w-5 h-5" />
-                    <span>Transactions</span>
-                </Link>
-                <Link to="/inventory" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${location.pathname === '/inventory' ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>
-                    <MdOutlineInventory className="w-5 h-5" />
-                    <span>Inventory</span>
-                </Link>
-                <Link to="/suppliers" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${location.pathname === '/suppliers' ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>
-                    <MdOutlinePeople className="w-5 h-5" />
-                    <span>Suppliers</span>
-                </Link>
-                <Link to="/forecast" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${location.pathname === '/forecast' ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>
-                    <MdOutlineInsights className="w-5 h-5" />
-                    <span>Forecast</span>
-                </Link>
-                <Link to="/settings" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition ${location.pathname === '/settings' ? 'bg-blue-50 text-blue-600 font-medium' : 'text-gray-600 hover:bg-gray-50'}`}>
-                    <MdOutlineSettings className="w-5 h-5" />
-                    <span>Settings</span>
-                </Link>
-            </nav>
-        </aside>
-    )
+const navigationItems = [
+  {
+    label: "Dashboard",
+    path: "/dashboard",
+  },
+  {
+    label: "Transactions",
+    path: "/transactions",
+  },
+  {
+    label: "Payables",
+    path: "/payables",
+  },
+  {
+    label: "Receivables",
+    path: "/receivables",
+  },
+  {
+    label: "Working Capital",
+    path: "/working-capital",
+  },
+  {
+    label: "Forecast",
+    path: "/forecast",
+  },
+
+
+  {
+    label: "Risk & Safe to Spend",
+    path: "/risk",
+  },
+
+];
+
+function Sidebar() {
+  return (
+    <aside className="fixed left-0 top-0 h-screen w-64 border-r bg-white">
+      <div className="border-b p-6">
+        <h1 className="text-xl font-bold">
+          DhanChakra
+        </h1>
+      </div>
+
+      <nav className="p-4">
+        {navigationItems.map((item) => (
+          <NavLink
+            key={item.path}
+            to={item.path}
+            className={({ isActive }) =>
+              `mb-1 block rounded-lg px-4 py-3 text-sm ${
+                isActive
+                  ? "bg-black text-white"
+                  : "text-gray-700 hover:bg-gray-100"
+              }`
+            }
+          >
+            {item.label}
+          </NavLink>
+        ))}
+      </nav>
+    </aside>
+  );
 }
+
+export default Sidebar;

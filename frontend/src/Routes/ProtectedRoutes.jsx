@@ -1,22 +1,18 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import MainLayout from "../layout/MainLayout";
-import { useAuth } from "@clerk/clerk-react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "@clerk/react";
 
-export default function ProtectedRoute({ children }) {
-    const location = useLocation();
-    const { isSignedIn, isLoaded } = useAuth();
+function ProtectedRoutes() {
+  const { isLoaded, isSignedIn } = useAuth();
 
-    if (!isLoaded) {
-        return <div className="h-screen w-full flex items-center justify-center">Loading...</div>;
-    }
+  if (!isLoaded) {
+    return <div>Loading...</div>;
+  }
 
-    if (!isSignedIn) {
-        return <Navigate to="/" state={{ from: location }} replace />;
-    }
+  if (!isSignedIn) {
+    return <Navigate to="/login" replace />;
+  }
 
-    return (
-        <MainLayout>
-            {children ?? <Outlet />}
-        </MainLayout>
-    );
+  return <Outlet />;
 }
+
+export default ProtectedRoutes;

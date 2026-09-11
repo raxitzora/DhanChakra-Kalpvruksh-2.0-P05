@@ -1,8 +1,15 @@
-export default function Register() {
-    return (
-        <div className="p-6">
-            <h2 className="text-2xl font-bold text-gray-800">Register</h2>
-            <p>Registration page coming soon...</p>
-        </div>
-    );
+import { SignUp } from "@clerk/react";
+
+function Register() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <SignUp
+        routing="path"
+        path="/register"
+        signInUrl="/login"
+      />
+    </div>
+  );
 }
+
+export default Register;

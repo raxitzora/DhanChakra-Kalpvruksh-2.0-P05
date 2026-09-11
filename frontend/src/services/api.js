@@ -1,43 +1,72 @@
-import { useAuth } from "@clerk/clerk-react";
+async function request(endpoint, options = {}, getToken) {
+  const token = await getToken();
 
-export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  const response = await fetch(
+    `${import.meta.env.VITE_API_BASE_URL}${endpoint}`,
+    {
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        ...options.headers,
+      },
+    }
+  );
 
-export const useApi = () => {
-    const { getToken } = useAuth();
+  const data = await response.json();
 
-    const fetchWithAuth = async (endpoint, options = {}) => {
-        const token = await getToken();
-        
-        const headers = {
-            'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            ...options.headers
-        };
+  if (!response.ok) {
+    throw new Error(data.message || "Request failed");
+  }
 
-        const response = await fetch(`${API_URL}${endpoint}`, {
-            ...options,
-            headers
-        });
+  return data;
+}
 
-        if (!response.ok) {
-            throw new Error(`API Error: ${response.status} ${response.statusText}`);
-        }
+async function get(endpoint, getToken) {
+  return request(
+    endpoint,
+    {
+      method: "GET",
+    },
+    getToken
+  );
+}
 
-        return response.json();
-    };
+async function post(endpoint, body, getToken) {
+  return request(
+    endpoint,
+    {
+      method: "POST",
+      body: JSON.stringify(body),
+    },
+    getToken
+  );
+}
 
-    return {
-        get: (endpoint) => fetchWithAuth(endpoint),
-        post: (endpoint, data) => fetchWithAuth(endpoint, {
-            method: 'POST',
-            body: JSON.stringify(data)
-        }),
-        put: (endpoint, data) => fetchWithAuth(endpoint, {
-            method: 'PUT',
-            body: JSON.stringify(data)
-        }),
-        del: (endpoint) => fetchWithAuth(endpoint, {
-            method: 'DELETE'
-        })
-    };
+async function put(endpoint, body, getToken) {
+  return request(
+    endpoint,
+    {
+      method: "PUT",
+      body: JSON.stringify(body),
+    },
+    getToken
+  );
+}
+
+async function remove(endpoint, getToken) {
+  return request(
+    endpoint,
+    {
+      method: "DELETE",
+    },
+    getToken
+  );
+}
+
+export const api = {
+  get,
+  post,
+  put,
+  remove,
 };

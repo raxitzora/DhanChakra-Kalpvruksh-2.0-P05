@@ -1,11 +1,15 @@
-import { SignIn } from "@clerk/clerk-react";
+import { SignIn } from "@clerk/react";
 
-const Login = () => {
+function Login() {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <SignIn routing="path" path="/" />
+    <div className="flex min-h-screen items-center justify-center">
+      <SignIn
+        routing="path"
+        path="/login"
+        signUpUrl="/register"
+      />
     </div>
   );
-};
- 
-export { Login };
+}
+
+export default Login;
