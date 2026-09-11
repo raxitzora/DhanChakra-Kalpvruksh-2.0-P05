@@ -1,16 +1,15 @@
 const express = require("express");
 const cors = require("cors");
+const { clerkMiddleware } = require("@clerk/express");
 
 const routes = require("./routes");
-const errorMiddleware = require("./middleware/error.middleware");
 
 const app = express();
 
 app.use(cors());
+app.use(clerkMiddleware());
 app.use(express.json());
 
 app.use("/api", routes);
-
-app.use(errorMiddleware);
 
 module.exports = app;
