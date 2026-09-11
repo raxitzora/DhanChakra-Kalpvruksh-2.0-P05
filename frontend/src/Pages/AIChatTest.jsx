@@ -10,10 +10,24 @@ function AIChatTest() {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const businessId = localStorage.getItem("selectedBusinessId");
+
   async function handleSendMessage(event) {
     event.preventDefault();
 
     if (!message.trim() || loading) {
+      return;
+    }
+
+    if (!businessId) {
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          role: "error",
+          content: "Please select a business first.",
+        },
+      ]);
+
       return;
     }
 
@@ -33,16 +47,50 @@ function AIChatTest() {
     try {
       const result = await sendAIMessage(
         getToken,
+        businessId,
         userMessage
       );
 
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        {
-          role: "assistant",
-          content: result.data.message,
-        },
-      ]);
+      const data = result.data;
+
+      if (
+        data.type === "message" ||
+        data.type === "action_completed"
+      ) {
+        setMessages((currentMessages) => [
+          ...currentMessages,
+          {
+            role: "assistant",
+            content: data.message,
+          },
+        ]);
+      } else if (data.type === "confirmation_required") {
+        const args = data.arguments;
+
+        const confirmationMessage = `
+I understood that you want to add a receivable:
+
+Customer: ${args.customerName}
+Amount: ₹${args.amount}
+Expected Date: ${args.expectedDate || "Not provided"}
+Description: ${args.description || "Not provided"}
+
+Please confirm this action.
+        `.trim();
+
+        setMessages((currentMessages) => [
+          ...currentMessages,
+          {
+            role: "assistant",
+            content: confirmationMessage,
+            action: {
+              type: "confirmation_required",
+              action: data.action,
+              arguments: args,
+            },
+          },
+        ]);
+      }
     } catch (error) {
       setMessages((currentMessages) => [
         ...currentMessages,
@@ -57,61 +105,69 @@ function AIChatTest() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="mx-auto w-full max-w-4xl">
+      {/* Header */}
+      <div className="mb-6 border-b border-gray-200 pb-5">
+        <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
+          DhanChakra AI
+        </h1>
 
-      <h1 className="text-2xl font-bold mb-6">
-        DhanChakra AI
-      </h1>
+        <p className="mt-1 text-sm text-gray-500">
+          Ask questions or manage your business using natural language.
+        </p>
+      </div>
 
-      <div className="bg-white border rounded-lg p-4 min-h-[400px] mb-4">
-
-        {messages.length === 0 && (
-          <p className="text-gray-500">
-            Start a conversation with DhanChakra AI.
-          </p>
-        )}
-
-        <div className="space-y-4">
-
-          {messages.map((item, index) => (
-            <div
-              key={index}
-              className={
-                item.role === "user"
-                  ? "text-right"
-                  : "text-left"
-              }
-            >
-              <div
-                className={
-                  item.role === "user"
-                    ? "inline-block bg-black text-white px-4 py-2 rounded-lg"
-                    : item.role === "error"
-                    ? "inline-block bg-red-100 text-red-700 px-4 py-2 rounded-lg"
-                    : "inline-block bg-gray-100 text-gray-900 px-4 py-2 rounded-lg"
-                }
-              >
-                {item.content}
-              </div>
-            </div>
-          ))}
-
-          {loading && (
-            <div className="text-left">
-              <div className="inline-block bg-gray-100 px-4 py-2 rounded-lg">
-                Thinking...
-              </div>
+      {/* Chat */}
+      <div className="mb-4 flex min-h-[420px] flex-col rounded-xl border border-gray-200 bg-white">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          {messages.length === 0 && (
+            <div className="flex min-h-[360px] items-center justify-center">
+              <p className="text-center text-sm text-gray-500">
+                Start a conversation with DhanChakra AI.
+              </p>
             </div>
           )}
 
+          <div className="space-y-5">
+            {messages.map((item, index) => (
+              <div
+                key={index}
+                className={
+                  item.role === "user"
+                    ? "flex justify-end"
+                    : "flex justify-start"
+                }
+              >
+                <div
+                  className={
+                    item.role === "user"
+                      ? "max-w-[85%] rounded-lg bg-gray-900 px-4 py-2.5 text-sm leading-6 text-white sm:max-w-[70%]"
+                      : item.role === "error"
+                      ? "max-w-[85%] rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm leading-6 text-red-700 sm:max-w-[70%]"
+                      : "max-w-[85%] rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm leading-6 text-gray-800 sm:max-w-[70%]"
+                  }
+                >
+                  {item.content}
+                </div>
+              </div>
+            ))}
+
+            {loading && (
+              <div className="flex justify-start">
+                <div className="rounded-lg border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-500">
+                  Thinking...
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
+      {/* Input */}
       <form
         onSubmit={handleSendMessage}
-        className="flex gap-3"
+        className="flex flex-col gap-3 sm:flex-row"
       >
-
         <input
           type="text"
           value={message}
@@ -119,19 +175,17 @@ function AIChatTest() {
             setMessage(event.target.value)
           }
           placeholder="Ask DhanChakra AI..."
-          className="flex-1 border rounded-lg px-4 py-3"
+          className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-gray-500 focus:ring-1 focus:ring-gray-500"
         />
 
         <button
           type="submit"
           disabled={loading || !message.trim()}
-          className="px-6 py-3 bg-black text-white rounded-lg disabled:opacity-50"
+          className="rounded-lg bg-gray-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Send
+          {loading ? "Thinking..." : "Send"}
         </button>
-
       </form>
-
     </div>
   );
 }

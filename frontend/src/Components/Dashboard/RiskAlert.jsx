@@ -2,25 +2,25 @@ function getRiskStyles(riskLevel) {
   switch (riskLevel) {
     case "LOW":
       return {
-        container: "border-green-200 bg-green-50",
+        container: "border-green-200 bg-green-50/60",
         badge: "bg-green-100 text-green-700",
       };
 
     case "MEDIUM":
       return {
-        container: "border-yellow-200 bg-yellow-50",
+        container: "border-yellow-200 bg-yellow-50/60",
         badge: "bg-yellow-100 text-yellow-700",
       };
 
     case "HIGH":
       return {
-        container: "border-orange-200 bg-orange-50",
+        container: "border-orange-200 bg-orange-50/60",
         badge: "bg-orange-100 text-orange-700",
       };
 
     case "CRITICAL":
       return {
-        container: "border-red-200 bg-red-50",
+        container: "border-red-200 bg-red-50/60",
         badge: "bg-red-100 text-red-700",
       };
 
@@ -41,28 +41,28 @@ function RiskAlert({ alert }) {
 
   return (
     <div
-      className={`rounded-xl border p-6 ${styles.container}`}
+      className={`w-full rounded-xl border p-5 sm:p-6 ${styles.container}`}
     >
-      <div className="flex items-start justify-between gap-4">
-        <div>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <p className="text-sm font-medium text-gray-500">
             Cashflow Risk
           </p>
 
-          <h2 className="mt-1 text-xl font-semibold">
+          <h2 className="mt-1 text-lg font-semibold tracking-tight text-gray-900 sm:text-xl">
             Cashflow Risk: {alert.riskLevel}
           </h2>
         </div>
 
         <span
-          className={`rounded-full px-3 py-1 text-xs font-semibold ${styles.badge}`}
+          className={`w-fit rounded-md px-2.5 py-1 text-xs font-semibold tracking-wide ${styles.badge}`}
         >
           {alert.riskLevel}
         </span>
       </div>
 
       {alert.riskMessage && (
-        <p className="mt-4 text-sm text-gray-700">
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-gray-700">
           {alert.riskMessage}
         </p>
       )}
