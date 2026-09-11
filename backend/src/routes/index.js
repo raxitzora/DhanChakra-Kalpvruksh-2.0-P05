@@ -5,6 +5,7 @@ const userRoutes = require("../modules/users/user.routes");
 const businessRoutes = require("../modules/businesses/business.routes");
 const transactionRoutes = require("../modules/transactions/transaction.routes");
 const payableRoutes = require("../modules/payables/payable.routes");
+const receivableRoutes = require("../modules/receivables/receivable.routes");
 
 const router = express.Router();
 
@@ -27,6 +28,7 @@ router.use("/users", userRoutes);
 router.use("/businesses", businessRoutes);
 router.use("/transactions", transactionRoutes);
 router.use("/payables", payableRoutes);
+router.use("/receivables", receivableRoutes);
 
 
 
